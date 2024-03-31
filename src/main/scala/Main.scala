@@ -1,3 +1,5 @@
+import scala.annotation.tailrec
+
 object Main extends App {
 
   def add(network: Map[String, Set[String]], person: String): Map[String, Set[String]] =
@@ -42,6 +44,24 @@ object Main extends App {
     network ++ connections.map(entry => entry -> (network.getOrElse(entry, Set.empty[String]) - person))
   }
 
+  def mostFriends(network: Map[String, Set[String]]): String =
+    network.maxBy(entry => entry._2.size)._1
+
+  def isConnected(network: Map[String, Set[String]], person1: String, person2: String): Boolean =
+    {
+    @tailrec
+      def bfs(target : String, visited: Set[String], next: Set[String] ) : Boolean = {
+      if(next.isEmpty) false
+      else {
+        val currentPerson = next.head
+        if (currentPerson == target) true
+        else if (visited.contains(currentPerson)) bfs(target, visited, next.tail)
+        else bfs (target, visited + currentPerson, next.tail ++ network(currentPerson))
+      }
+    }
+      bfs(person2, Set(), network(person1))
+    }
+
 
   val network: Map[String, Set[String]] = Map()
   val updatedNetwork = add(network, "Cem")
@@ -64,7 +84,15 @@ object Main extends App {
   println(net)
   net = removeFriend(net, "Cem", "Orhun")
   println(net)
-
+  net = add(net, "Some Dude")
+  net = add(net, "Some Gal")
+  net = addFriend(net, "Cem", "Some Gal")
+  net = addFriend(net, "Cem", "Some Dude")
+  println(net)
+  println(mostFriends(net))
+  println(isConnected(net, "Cem", "Orhun"))
+  net = addFriend(net, "Orhun", "Some Gal")
+  println(isConnected(net, "Cem","Orhun"))
 
 
 
