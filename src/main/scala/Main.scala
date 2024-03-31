@@ -38,7 +38,8 @@ object Main extends App {
   }
 
   def remove(network: Map[String, Set[String]], person: String): Map[String, Set[String]] = {
-    network ++ network(person).map(entry => entry -> (network(entry) - person))
+    val connections = network.getOrElse(person, Set.empty[String])
+    network ++ connections.map(entry => entry -> (network.getOrElse(entry, Set.empty[String]) - person))
   }
 
 
