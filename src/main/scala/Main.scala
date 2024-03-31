@@ -38,7 +38,7 @@ object Main extends App {
   }
 
   def remove(network: Map[String, Set[String]], person: String): Map[String, Set[String]] = {
-    network.map(entry => (entry._1,entry._2 - person)) - person
+    network ++ network(person).map(entry => entry -> (network(entry) - person))
   }
 
 
